@@ -1,0 +1,48 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "first_name": "Nguyễn Văn",
+      "last_name": "Nam",
+      "gender": 0,
+      "date_of_birth": "20/02/2023",
+      "address": "Thanh Xuân, Hà Nội",
+      "avatar": "https://example.com/avatar.jpg",
+      "email": "nvnam@gmail.com",
+      "password": 123456,
+      "phone_number": "0989876787",
+      "created_at": "2021-01-01T00:00:00.000Z",
+      "role":"user"
+    }
+  ],
+  "subjects": [
+    {
+      "id": 1,
+      "subject_name": "HTML, CSS",
+      "created_at": "2022-03-01T00:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "subject_name": "Javascript",
+      "created_at": "2022-03-01T00:00:00.000Z"
+    }
+  ],
+  "lessons": [
+    {
+      "id": 1,
+      "subject_id": 1,
+      "lesson_name": "Bài học 1",
+      "time": 60,
+      "status": "incomplete",
+      "created_at": "2022-03-01T00:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "subject_id": 2,
+      "lesson_name": "Bài học 2",
+      "time": 90,
+      "status": "completed",
+      "created_at": "2022-03-01T00:00:00.000Z"
+    }
+  ]
+}
