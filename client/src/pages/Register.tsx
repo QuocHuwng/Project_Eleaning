@@ -61,20 +61,17 @@ export default function Register() {
         return Object.values(newErrors).every((err) => err === "");
     };
 
-    // Submit form
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validate()) return;
 
         try {
-            // Kiểm tra email đã tồn tại chưa
             const existing = await axios.get(`http://localhost:8080/users?email=${email}`);
             if (existing.data.length > 0) {
                 setErrors((prev) => ({ ...prev, email: "Email đã được sử dụng" }));
                 return;
             }
 
-            // Gửi dữ liệu lên json-server
             await axios.post("http://localhost:8080/users", {
                 lastname,
                 firstname,
@@ -83,7 +80,7 @@ export default function Register() {
             });
 
             alert("Đăng ký thành công!");
-            navigate("/login"); // Chuyển hướng về trang login
+            navigate("/login"); 
         } catch (error) {
             console.error(error);
             alert("Đăng ký thất bại, thử lại sau");

@@ -1,18 +1,25 @@
 {
   "users": [
     {
-      "id": 1,
-      "first_name": "Nguyễn Văn",
-      "last_name": "Nam",
-      "gender": 0,
-      "date_of_birth": "20/02/2023",
-      "address": "Thanh Xuân, Hà Nội",
-      "avatar": "https://example.com/avatar.jpg",
-      "email": "nvnam@gmail.com",
-      "password": 123456,
-      "phone_number": "0989876787",
-      "created_at": "2021-01-01T00:00:00.000Z",
-      "role":"user"
+      "lastname": "Nguyen",
+      "firstname": "Hưng",
+      "email": "hung@gmail.com",
+      "password": "12345678",
+      "id": 2
+    },
+    {
+      "lastname": "hung",
+      "firstname": "nguyen",
+      "email": "nguyenhung@gmail.com",
+      "password": "12345678",
+      "id": 3
+    },
+    {
+      "lastname": "hung",
+      "firstname": "nguyen",
+      "email": "hungnguyen@gmail.com",
+      "password": "12345678",
+      "id": 4
     }
   ],
   "subjects": [
