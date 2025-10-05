@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../css/Login.css";
 
 function Login() {
@@ -12,25 +13,64 @@ function Login() {
         login: "",
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         let hasError = false;
         const newErrors = { email: "", password: "", login: "" };
 
-        if (!email) {
+        if (!email.trim()) {
             newErrors.email = "Vui lòng nhập email";
             hasError = true;
         }
-        if (!password) {
+        if (!password.trim()) {
             newErrors.password = "Vui lòng nhập mật khẩu";
             hasError = true;
         }
 
         setErrors(newErrors);
+        if (hasError) return;
 
-        if (!hasError) {
-            console.log("Đăng nhập thành công:", { email, password, remember });
+        // ✅ Kiểm tra tài khoản admin
+        if (email === "admin@gmail.com" && password === "admin123") {
+            alert("Đăng nhập thành công (Admin)");
+            navigate("/Manager");
+            return;
+        }
+
+        // ✅ Kiểm tra tài khoản người dùng trong db.json
+        try {
+            const res = await axios.get(`http://localhost:8080/users?email=${email}`);
+            const user = res.data[0];
+
+            if (!user) {
+                setErrors((prev) => ({
+                    ...prev,
+                    login: "Email không tồn tại trong hệ thống.",
+                }));
+                return;
+            }
+
+            if (user.password !== password) {
+                setErrors((prev) => ({
+                    ...prev,
+                    login: "Mật khẩu không đúng.",
+                }));
+                return;
+            }
+
+            // ✅ Nếu đăng nhập thành công
+            alert("Đăng nhập thành công!");
+            if (remember) {
+                localStorage.setItem("user", JSON.stringify(user));
+            }
+
+            navigate("/home"); // Chuyển đến trang Home
+        } catch (err) {
+            console.error(err);
+            alert("Đăng nhập thất bại, vui lòng thử lại sau.");
         }
     };
 
@@ -55,11 +95,15 @@ function Login() {
                 <input
                     id="password"
                     type="password"
-                    placeholder=""
+                    placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <span className="error-message">{errors.password}</span>
+
+                {errors.login && (
+                    <span className="error-message">{errors.login}</span>
+                )}
 
                 <div className="options">
                     <div className="remember">
@@ -80,6 +124,12 @@ function Login() {
 
             <p className="login-link">
                 Bạn chưa có tài khoản? <Link to="/register">Đăng ký</Link>
+            </p>
+
+            <p style={{ fontSize: "13px", color: "#555", marginTop: "8px" }}>
+                <strong>Tài khoản Admin:</strong><br />
+                Email: admin@gmail.com <br />
+                Mật khẩu: admin123
             </p>
         </div>
     );
