@@ -2,8 +2,10 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Manager from "../components/Manager";
-import Home from "../components/Home";
+// import Manager from "../components/Manager";
+import Home from "../pages/Home";
+import ManagerLesson from "../components/ManagerLesson";
+import ManagerSubject from "../components/ManagerSubject";
 
 export default function AppRouter() {
   return (
@@ -11,8 +13,10 @@ export default function AppRouter() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/manager" element={<Manager />} />
         <Route path="/home" element={<Home />} />
+        {/* <Route path="/manager" element={<Manager />} /> */}
+        <Route path="/manager/lesson" element={<ManagerLesson />} />
+        <Route path="/manager/subject" element={<ManagerSubject />} />
       </Routes>
     </Router>
   );

@@ -493,3 +493,26 @@
     background-color: #ddd;
     cursor: not-allowed;
 }
+
+
+
+
+/* Căn giữa các cột cần thiết */
+.table-container th:first-child,
+.table-container td:first-child,
+.table-container th:nth-child(3),
+.table-container td:nth-child(3),
+.table-container th:nth-child(4),
+.table-container td:nth-child(4),
+.table-container th:last-child,
+.table-container td:last-child {
+    text-align: center;
+}
+
+
+/* Xoá lỗi lệch do .text-center cũ */
+.text-center {
+    text-align: center !important;
+    display: block;
+    padding-left: 0 !important;
+}

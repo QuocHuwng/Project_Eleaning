@@ -36,7 +36,7 @@ function Login() {
         // ✅ Kiểm tra tài khoản admin
         if (email === "admin@gmail.com" && password === "admin123") {
             alert("Đăng nhập thành công (Admin)");
-            navigate("/Manager");
+            navigate("/manager/subject");
             return;
         }
 

@@ -46,47 +46,78 @@
   ],
   "subjects": [
     {
-      "name": "học c",
+      "name": "Học C",
       "status": "active",
-      "id": 11
+      "id": 1
     },
     {
-      "name": "học cd",
-      "status": "active",
-      "id": 12
-    },
-    {
-      "name": "ádasdd",
-      "status": "active",
-      "id": 15
-    },
-    {
-      "name": "ádss",
+      "name": "Học React",
       "status": "inactive",
-      "id": 16
+      "id": 2
     },
     {
-      "name": "hi",
+      "name": "Học Toán",
       "status": "active",
-      "id": 18
+      "id": 3
+    },
+    {
+      "name": "Học Văn",
+      "status": "active",
+      "id": 4
+    },
+    {
+      "name": "Học Chơi",
+      "status": "inactive",
+      "id": 5
+    },
+    {
+      "name": "Học Tập",
+      "status": "active",
+      "id": 6
     }
   ],
   "lessons": [
     {
-      "id": 1,
-      "subject_id": 1,
-      "lesson_name": "Bài học 1",
-      "time": 60,
-      "status": "incomplete",
-      "created_at": "2022-03-01T00:00:00.000Z"
+      "name": "bài 1 C",
+      "subjectId": 1,
+      "status": "active",
+      "time": 45,
+      "id": 1
     },
     {
-      "id": 2,
-      "subject_id": 2,
-      "lesson_name": "Bài học 2",
-      "time": 90,
-      "status": "completed",
-      "created_at": "2022-03-01T00:00:00.000Z"
+      "name": "bài 2 react",
+      "subjectId": 2,
+      "status": "inactive",
+      "time": 45,
+      "id": 2
+    },
+    {
+      "name": "Bài 3",
+      "subjectId": 3,
+      "status": "active",
+      "time": 45,
+      "id": 3
+    },
+    {
+      "name": "Bài 4",
+      "subjectId": 4,
+      "status": "active",
+      "time": 45,
+      "id": 4
+    },
+    {
+      "name": "Bài 5",
+      "subjectId": 5,
+      "status": "active",
+      "time": 45,
+      "id": 5
+    },
+    {
+      "name": "bài 6",
+      "subjectId": 6,
+      "status": "active",
+      "time": 45,
+      "id": 6
     }
   ]
 }
