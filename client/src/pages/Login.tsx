@@ -6,7 +6,7 @@ import "../css/Login.css";
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [remember, setRemember] = useState(false);
+    const [remember, setRemember] = useState(false); // vẫn giữ cho đẹp, nhưng không cần dùng
     const [errors, setErrors] = useState({
         email: "",
         password: "",
@@ -35,6 +35,14 @@ function Login() {
 
         // ✅ Kiểm tra tài khoản admin
         if (email === "admin@gmail.com" && password === "admin123") {
+            const adminUser = {
+                name: "Quản trị viên",
+                email: "admin@gmail.com",
+                role: "admin",
+            };
+
+            // ✅ Lưu luôn, không cần kiểm tra remember
+            localStorage.setItem("user", JSON.stringify(adminUser));
             alert("Đăng nhập thành công (Admin)");
             navigate("/manager/subject");
             return;
@@ -61,13 +69,11 @@ function Login() {
                 return;
             }
 
-            // ✅ Nếu đăng nhập thành công
+            // ✅ Đăng nhập thành công: lưu luôn user
             alert("Đăng nhập thành công!");
-            if (remember) {
-                localStorage.setItem("user", JSON.stringify(user));
-            }
+            localStorage.setItem("user", JSON.stringify(user));
 
-            navigate("/home"); // Chuyển đến trang Home
+            navigate("/home");
         } catch (err) {
             console.error(err);
             alert("Đăng nhập thất bại, vui lòng thử lại sau.");
@@ -85,7 +91,6 @@ function Login() {
                 <input
                     id="email"
                     type="email"
-                    placeholder="you@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
@@ -95,7 +100,6 @@ function Login() {
                 <input
                     id="password"
                     type="password"
-                    placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
@@ -125,12 +129,10 @@ function Login() {
             <p className="login-link">
                 Bạn chưa có tài khoản? <Link to="/register">Đăng ký</Link>
             </p>
-
-            <p style={{ fontSize: "13px", color: "#555", marginTop: "8px" }}>
-                <strong>Tài khoản Admin:</strong><br />
+            <div className="demo-info">
                 Email: admin@gmail.com <br />
                 Mật khẩu: admin123
-            </p>
+            </div>
         </div>
     );
 }

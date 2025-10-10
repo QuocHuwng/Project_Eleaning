@@ -106,7 +106,7 @@ export default function Register() {
                 </div>
 
                 <label>Email</label>
-                <input type="email" placeholder="you@company.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <input type="email" placeholder="" value={email} onChange={(e) => setEmail(e.target.value)} />
                 <span className="error-message">{errors.email}</span>
 
                 <label>Mật khẩu</label>

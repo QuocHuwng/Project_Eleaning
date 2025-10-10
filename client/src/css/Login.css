@@ -8,14 +8,25 @@ body {
     background-color: #fff;
 }
 
-.container {
+/* .container {
     padding: 32px;
     border-radius: 8px;
     width: 100%;
     max-width: 448px;
     text-align: center;
+} */
+.container {
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 448px;
+    margin: 0 auto;
+    text-align: center;
 }
-
 .container h2 {
     font-size: 24px;
     font-weight: 700;

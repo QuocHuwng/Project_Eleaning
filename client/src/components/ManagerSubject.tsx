@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./../css/Manager.css";
@@ -23,7 +23,6 @@ const statusLabel: Record<string, string> = {
 
 export default function ManagerSubject() {
   const navigate = useNavigate();
-
   const [subjects, setSubjects] = useState<any[]>([]);
   const [originalSubjects, setOriginalSubjects] = useState<any[]>([]);
   const [search, setSearch] = useState("");
@@ -49,11 +48,31 @@ export default function ManagerSubject() {
   const itemsPerPage = 6;
   const [sortOrder, setSortOrder] = useState<"none" | "asc" | "desc">("none");
 
+  // ✅ menu avatar
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleAvatarClick = () => setShowUserMenu((prev) => !prev);
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    window.location.href = "http://localhost:5173/login";
+  };
+
+  // click ra ngoài thì ẩn menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   useEffect(() => {
     fetchSubjects();
   }, []);
 
-  // reset page khi thay đổi search / filter / sort để UX tốt hơn
   useEffect(() => {
     setCurrentPage(1);
   }, [search, filterStatus, sortOrder]);
@@ -160,7 +179,6 @@ export default function ManagerSubject() {
     setTimeout(() => setToastMessage(""), 3000);
   };
 
-  // ✅ Lọc: dùng search ở đây (đã khôi phục)
   const filteredSubjects = subjects.filter((subject) => {
     const matchName = (subject.name || "")
       .toLowerCase()
@@ -170,14 +188,12 @@ export default function ManagerSubject() {
     return matchName && matchStatus;
   });
 
-  // ✅ Sắp xếp 3 trạng thái: none → asc → desc
   let sortedSubjects = [...filteredSubjects];
   if (sortOrder === "asc") {
     sortedSubjects.sort((a, b) => a.name.localeCompare(b.name));
   } else if (sortOrder === "desc") {
     sortedSubjects.sort((a, b) => b.name.localeCompare(a.name));
   } else {
-    // giữ thứ tự gốc (originalSubjects) nhưng chỉ những phần tử đang lọc
     sortedSubjects = [...originalSubjects].filter((subject) =>
       filteredSubjects.some((f) => f.id === subject.id)
     );
@@ -189,7 +205,6 @@ export default function ManagerSubject() {
     else setSortOrder("none");
   };
 
-  // ✅ Phân trang
   const totalPages = Math.max(1, Math.ceil(sortedSubjects.length / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentSubjects = sortedSubjects.slice(
@@ -239,11 +254,24 @@ export default function ManagerSubject() {
           <button className="header-btn">
             <img src={icon_button} alt="menu" className="header-icon" />
           </button>
-          <div className="header-right">
+          <div className="header-right" ref={menuRef}>
             <button><img src={bell} alt="bell" className="header-icon" /></button>
             <button><img src={question} alt="help" className="header-icon" /></button>
             <button><img src={setting} alt="setting" className="header-icon" /></button>
-            <img src={Avatar} alt="Avatar" className="avatar" />
+
+            <div className="avatar-container">
+              <img
+                src={Avatar}
+                alt="Avatar"
+                className="avatar"
+                onClick={handleAvatarClick}
+              />
+              {showUserMenu && (
+                <div className="user-menu">
+                  <button onClick={handleLogout}>Đăng xuất</button>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 

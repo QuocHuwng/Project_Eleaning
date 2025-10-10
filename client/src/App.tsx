@@ -1,5 +1,5 @@
 
-import Manager from "./components/Manager";
+// import Manager from "./components/Manager";
 import AppRouter from "./routers/AppRouter";
 
 function App() {

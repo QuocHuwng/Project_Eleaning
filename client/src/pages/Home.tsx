@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "../css/Home.css";
@@ -13,40 +13,81 @@ import look from "../image/look.png";
 function Home() {
     const navigate = useNavigate();
 
-    // State
-    const [subjects, setSubjects] = useState([]);
-    const [lessons, setLessons] = useState([]);
+    const [subjects, setSubjects] = useState<any[]>([]);
+    const [lessons, setLessons] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [searchTerm, setSearchTerm] = useState("");
-    const [filterTab, setFilterTab] = useState("all"); // all | active | inactive
+    const [filterTab, setFilterTab] = useState("all");
 
+    const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const [user, setUser] = useState<{ name?: string; email?: string } | null>(null);
+
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    // ✅ Lấy thông tin người dùng mỗi khi component mount hoặc localStorage thay đổi
     useEffect(() => {
+        const loadUser = () => {
+            const storedUser = localStorage.getItem("user");
+            if (storedUser) {
+                try {
+                    setUser(JSON.parse(storedUser));
+                } catch {
+                    setUser(null);
+                }
+            } else {
+                setUser(null);
+            }
+        };
+        loadUser();
+
+        // Đóng popup khi click ra ngoài
+        const handleClickOutside = (e: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+                setShowProfileMenu(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    // ✅ Lấy dữ liệu môn học + bài học
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [subjectRes, lessonRes] = await Promise.all([
+                    axios.get("http://localhost:8080/subjects"),
+                    axios.get("http://localhost:8080/lessons"),
+                ]);
+                setSubjects(subjectRes.data);
+                setLessons(lessonRes.data);
+            } catch (error) {
+                console.error("Lỗi khi lấy dữ liệu:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
         fetchData();
     }, []);
 
-    const fetchData = async () => {
-        try {
-            const [subjectRes, lessonRes] = await Promise.all([
-                axios.get("http://localhost:8080/subjects"),
-                axios.get("http://localhost:8080/lessons"),
-            ]);
-            setSubjects(subjectRes.data);
-            setLessons(lessonRes.data);
-        } catch (error) {
-            console.error("Lỗi khi lấy dữ liệu:", error);
-        } finally {
-            setLoading(false);
+    // ✅ Đăng xuất
+    const handleLogout = () => {
+        const confirmLogout = window.confirm("Bạn có chắc chắn muốn đăng xuất không?");
+        if (confirmLogout) {
+            localStorage.removeItem("user");
+            setUser(null);
+            alert("Đăng xuất thành công!");
+            navigate("/login");
         }
     };
 
-    // Gộp môn học và bài học tương ứng
+    // ✅ Gộp dữ liệu môn học và bài học
     const courses = subjects.map((subject) => ({
         ...subject,
         lessons: lessons.filter((lesson) => lesson.subjectId === subject.id),
     }));
 
-    // Lọc theo tab + từ khóa tìm kiếm
+    // ✅ Lọc dữ liệu theo trạng thái và từ khóa
     const filteredCourses = courses
         .filter((course) => {
             if (filterTab === "active") return course.status === "active";
@@ -57,7 +98,7 @@ function Home() {
             if (searchTerm.trim() === "") return true;
             const lower = searchTerm.toLowerCase();
             const matchSubject = course.name.toLowerCase().includes(lower);
-            const matchLesson = course.lessons.some((l) =>
+            const matchLesson = course.lessons.some((l: any) =>
                 l.name.toLowerCase().includes(lower)
             );
             return matchSubject || matchLesson;
@@ -77,6 +118,7 @@ function Home() {
                     />
                     <img src={look} alt="Look" className="look" />
                 </div>
+
                 <nav>
                     <button onClick={() => navigate("/")} className="nav-btn">
                         Trang chủ
@@ -90,9 +132,35 @@ function Home() {
                     <button onClick={() => navigate("/favorites")} className="nav-btn">
                         <img src={heart} alt="Yêu thích" />
                     </button>
-                    <button onClick={() => navigate("/profile")} className="nav-btn">
-                        <img src={human} alt="Tài khoản" />
-                    </button>
+
+                    {/* Nút tài khoản */}
+                    <div className="profile-menu-container" ref={menuRef}>
+                        <button
+                            onClick={() => setShowProfileMenu((prev) => !prev)}
+                            className="nav-btn"
+                        >
+                            <img src={human} alt="Tài khoản" />
+                        </button>
+
+                        {/* Menu tài khoản */}
+                        {showProfileMenu && (
+                            <div className="profile-dropdown">
+                                <p className="user-name">
+                                    {user
+                                        ? user.name
+                                            ? user.name
+                                            : user.email
+                                                ? user.email
+                                                : "Người dùng"
+                                        : "Người dùng"}
+                                </p>
+                                <hr />
+                                <button className="logout-btn" onClick={handleLogout}>
+                                    Đăng xuất
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </nav>
             </header>
 
@@ -130,7 +198,7 @@ function Home() {
                                 {course.lessons.length > 0 ? (
                                     <>
                                         <ul>
-                                            {course.lessons.slice(0, 5).map((lesson) => (
+                                            {course.lessons.slice(0, 5).map((lesson: any) => (
                                                 <li
                                                     key={lesson.id}
                                                     className={

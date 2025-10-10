@@ -516,3 +516,36 @@
     display: block;
     padding-left: 0 !important;
 }
+
+
+
+.avatar-container {
+    position: relative;
+    display: inline-block;
+}
+
+.user-menu {
+    position: absolute;
+    right: 0;
+    top: 45px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    width: 120px;
+}
+
+.user-menu button {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 10px;
+    text-align: left;
+    cursor: pointer;
+    color: #333;
+}
+
+.user-menu button:hover {
+    background-color: #f2f2f2;
+}
