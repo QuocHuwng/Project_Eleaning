@@ -16,7 +16,6 @@ function Home() {
     const [subjects, setSubjects] = useState<any[]>([]);
     const [lessons, setLessons] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-
     const [searchTerm, setSearchTerm] = useState("");
     const [filterTab, setFilterTab] = useState("all");
 
@@ -25,23 +24,24 @@ function Home() {
 
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // ✅ Lấy thông tin người dùng mỗi khi component mount hoặc localStorage thay đổi
+    //  Kiểm tra đăng nhập và load user
     useEffect(() => {
-        const loadUser = () => {
-            const storedUser = localStorage.getItem("user");
-            if (storedUser) {
-                try {
-                    setUser(JSON.parse(storedUser));
-                } catch {
-                    setUser(null);
-                }
-            } else {
-                setUser(null);
-            }
-        };
-        loadUser();
+        const storedUser = localStorage.getItem("user");
 
-        // Đóng popup khi click ra ngoài
+        if (!storedUser) {
+            // Nếu chưa đăng nhập → quay lại trang login
+            alert("Vui lòng đăng nhập để truy cập trang này!");
+            navigate("/login");
+            return;
+        }
+
+        try {
+            setUser(JSON.parse(storedUser));
+        } catch {
+            setUser(null);
+        }
+
+        // Đóng menu khi click ra ngoài
         const handleClickOutside = (e: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
                 setShowProfileMenu(false);
@@ -49,9 +49,9 @@ function Home() {
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, [navigate]);
 
-    // ✅ Lấy dữ liệu môn học + bài học
+    //  Lấy dữ liệu môn học và bài học
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -70,7 +70,7 @@ function Home() {
         fetchData();
     }, []);
 
-    // ✅ Đăng xuất
+    //  Đăng xuất
     const handleLogout = () => {
         const confirmLogout = window.confirm("Bạn có chắc chắn muốn đăng xuất không?");
         if (confirmLogout) {
@@ -81,13 +81,13 @@ function Home() {
         }
     };
 
-    // ✅ Gộp dữ liệu môn học và bài học
+    //  Gộp dữ liệu
     const courses = subjects.map((subject) => ({
         ...subject,
         lessons: lessons.filter((lesson) => lesson.subjectId === subject.id),
     }));
 
-    // ✅ Lọc dữ liệu theo trạng thái và từ khóa
+    //  Lọc dữ liệu
     const filteredCourses = courses
         .filter((course) => {
             if (filterTab === "active") return course.status === "active";
@@ -142,16 +142,11 @@ function Home() {
                             <img src={human} alt="Tài khoản" />
                         </button>
 
-                        {/* Menu tài khoản */}
                         {showProfileMenu && (
                             <div className="profile-dropdown">
                                 <p className="user-name">
                                     {user
-                                        ? user.name
-                                            ? user.name
-                                            : user.email
-                                                ? user.email
-                                                : "Người dùng"
+                                        ? user.name || user.email || "Người dùng"
                                         : "Người dùng"}
                                 </p>
                                 <hr />
@@ -186,7 +181,7 @@ function Home() {
                 </button>
             </div>
 
-            {/* Nội dung chính */}
+            {/* Nội dung */}
             {loading ? (
                 <p className="loading-text">Đang tải dữ liệu...</p>
             ) : (

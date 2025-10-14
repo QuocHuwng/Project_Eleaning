@@ -394,7 +394,7 @@
 .input-error {
     border: 1px solid red;
 }
-/* ✅ Toast notification */
+/*  Toast notification */
 .toast {
     position: fixed;
     bottom: 30px;
@@ -427,7 +427,7 @@
     }
 }
 
-/* ✅ Nút xóa trong modal */
+/*  Nút xóa trong modal */
 .btn-submit.delete {
     background-color: #e53935;
 }

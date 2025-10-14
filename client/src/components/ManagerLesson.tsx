@@ -56,7 +56,7 @@ export default function ManagerLesson() {
 
   const [sortOrder, setSortOrder] = useState<"none" | "asc" | "desc">("none");
 
-  // ✅ Lấy dữ liệu bài học + danh sách môn học
+  //  Lấy dữ liệu bài học + danh sách môn học
   useEffect(() => {
     fetchLessons();
     fetchSubjects();
@@ -81,7 +81,7 @@ export default function ManagerLesson() {
     }
   };
 
-  // ✅ Thêm bài học mới
+  //  Thêm bài học mới
   const handleAddLesson = async () => {
     if (newLessonName.trim() === "") {
       setNameError("Vui lòng nhập Tên bài học!");
@@ -114,7 +114,7 @@ export default function ManagerLesson() {
       setNewStatus("active");
       setNewTime(45);
       setShowAddModal(false);
-      showToast("✅ Đã thêm bài học thành công!");
+      showToast(" Đã thêm bài học thành công!");
     } catch (err) {
       console.error("Lỗi khi thêm bài học:", err);
     }
@@ -144,7 +144,7 @@ export default function ManagerLesson() {
       await fetchLessons();
       setShowEditModal(false);
       setEditError("");
-      showToast("✏️ Cập nhật bài học thành công!");
+      showToast(" Cập nhật bài học thành công!");
     } catch (err) {
       console.error("Lỗi khi cập nhật bài học:", err);
     }
@@ -161,7 +161,7 @@ export default function ManagerLesson() {
       await axios.delete(`http://localhost:8080/lessons/${deleteId}`);
       await fetchLessons();
       setShowDeleteConfirm(false);
-      showToast(`🗑️ Đã xóa "${deleteName}" thành công!`);
+      showToast(`Đã xóa "${deleteName}" thành công!`);
     } catch (err) {
       console.error("Lỗi khi xóa bài học:", err);
     }
@@ -172,7 +172,7 @@ export default function ManagerLesson() {
     setTimeout(() => setToastMessage(""), 3000);
   };
 
-  // ✅ Lọc & sắp xếp
+  //  Lọc & sắp xếp
   const filteredLessons = lessons.filter((lesson) => {
     const matchName = (lesson.name || "")
       .toLowerCase()

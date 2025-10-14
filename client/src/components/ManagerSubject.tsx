@@ -48,7 +48,6 @@ export default function ManagerSubject() {
   const itemsPerPage = 6;
   const [sortOrder, setSortOrder] = useState<"none" | "asc" | "desc">("none");
 
-  // ✅ menu avatar
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -58,7 +57,6 @@ export default function ManagerSubject() {
     window.location.href = "http://localhost:5173/login";
   };
 
-  // click ra ngoài thì ẩn menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -109,7 +107,7 @@ export default function ManagerSubject() {
       setNewStatus("active");
       setNameError("");
       setShowAddModal(false);
-      showToast("✅ Đã thêm môn học thành công!");
+      showToast(" Đã thêm môn học thành công!");
     } catch (err) {
       console.error("Lỗi khi thêm môn học:", err);
     }
@@ -151,7 +149,7 @@ export default function ManagerSubject() {
       await fetchSubjects();
       setShowEditModal(false);
       setEditError("");
-      showToast("✏️ Cập nhật môn học thành công!");
+      showToast(" Cập nhật môn học thành công!");
     } catch (err) {
       console.error("Lỗi khi cập nhật:", err);
     }
@@ -168,7 +166,7 @@ export default function ManagerSubject() {
       await axios.delete(`http://localhost:8080/subjects/${deleteId}`);
       await fetchSubjects();
       setShowDeleteConfirm(false);
-      showToast(`🗑️ Đã xóa "${deleteName}" thành công!`);
+      showToast(` Đã xóa "${deleteName}" thành công!`);
     } catch (err) {
       console.error("Lỗi khi xóa môn học:", err);
     }

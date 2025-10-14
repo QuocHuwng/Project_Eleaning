@@ -70,26 +70,18 @@
       "email": "lo@gmail.com",
       "password": "12345678",
       "id": 11
+    },
+    {
+      "lastname": "gh",
+      "firstname": "dsds",
+      "email": "nguyenhung2952006@gmail.com",
+      "password": "12345678",
+      "id": 12
     }
   ],
   "subjects": [
     {
-      "name": "Học C",
-      "status": "active",
-      "id": 1
-    },
-    {
-      "name": "Học React",
-      "status": "inactive",
-      "id": 2
-    },
-    {
-      "name": "Học Toán",
-      "status": "active",
-      "id": 3
-    },
-    {
-      "name": "Học Văn",
+      "name": "Học Vănm",
       "status": "active",
       "id": 4
     },
@@ -107,30 +99,19 @@
       "name": "hi",
       "status": "inactive",
       "id": 7
+    },
+    {
+      "name": "học toánd",
+      "status": "active",
+      "id": 8
+    },
+    {
+      "name": "m",
+      "status": "active",
+      "id": 9
     }
   ],
   "lessons": [
-    {
-      "name": "bài 1 C",
-      "subjectId": 1,
-      "status": "active",
-      "time": 45,
-      "id": 1
-    },
-    {
-      "name": "bài 2 react",
-      "subjectId": 2,
-      "status": "inactive",
-      "time": 45,
-      "id": 2
-    },
-    {
-      "name": "Bài 3",
-      "subjectId": 3,
-      "status": "active",
-      "time": 45,
-      "id": 3
-    },
     {
       "name": "Bài 4",
       "subjectId": 4,
