@@ -315,10 +315,10 @@ export default function ManagerSubject() {
                         src={arrow_down}
                         alt="down"
                         className={`arrow-down ${sortOrder === "desc"
-                            ? "rotated"
-                            : sortOrder === "none"
-                              ? "neutral"
-                              : ""
+                          ? "rotated"
+                          : sortOrder === "none"
+                            ? "neutral"
+                            : ""
                           }`}
                       />
                     </div>

@@ -6,7 +6,7 @@ import "../css/Login.css";
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [remember, setRemember] = useState(false); // vẫn giữ cho đẹp, nhưng không cần dùng
+    const [remember, setRemember] = useState(false); 
     const [errors, setErrors] = useState({
         email: "",
         password: "",
@@ -33,7 +33,6 @@ function Login() {
         setErrors(newErrors);
         if (hasError) return;
 
-        // ✅ Kiểm tra tài khoản admin
         if (email === "admin@gmail.com" && password === "admin123") {
             const adminUser = {
                 name: "Quản trị viên",
@@ -41,14 +40,12 @@ function Login() {
                 role: "admin",
             };
 
-            // ✅ Lưu luôn, không cần kiểm tra remember
             localStorage.setItem("user", JSON.stringify(adminUser));
             alert("Đăng nhập thành công (Admin)");
             navigate("/manager/subject");
             return;
         }
 
-        // ✅ Kiểm tra tài khoản người dùng trong db.json
         try {
             const res = await axios.get(`http://localhost:8080/users?email=${email}`);
             const user = res.data[0];
@@ -69,7 +66,6 @@ function Login() {
                 return;
             }
 
-            // ✅ Đăng nhập thành công: lưu luôn user
             alert("Đăng nhập thành công!");
             localStorage.setItem("user", JSON.stringify(user));
 

@@ -81,7 +81,7 @@
   ],
   "subjects": [
     {
-      "name": "Học Vănm",
+      "name": "Học Văn1",
       "status": "active",
       "id": 4
     },
@@ -109,6 +109,11 @@
       "name": "m",
       "status": "active",
       "id": 9
+    },
+    {
+      "name": "học văn",
+      "status": "active",
+      "id": 10
     }
   ],
   "lessons": [
