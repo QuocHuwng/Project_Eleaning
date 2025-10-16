@@ -36,14 +36,12 @@ export default function ManagerLesson() {
   const [toastMessage, setToastMessage] = useState("");
 
   const [newLessonName, setNewLessonName] = useState("");
-  const [newStatus, setNewStatus] = useState("active");
   const [newTime, setNewTime] = useState<number>(45);
   const [selectedSubjectId, setSelectedSubjectId] = useState<number | "">("");
   const [nameError, setNameError] = useState("");
 
   const [editId, setEditId] = useState<number | null>(null);
   const [editName, setEditName] = useState("");
-  const [editStatus, setEditStatus] = useState("active");
   const [editTime, setEditTime] = useState<number>(45);
   const [editSubjectId, setEditSubjectId] = useState<number | "">("");
   const [editError, setEditError] = useState("");
@@ -53,10 +51,8 @@ export default function ManagerLesson() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
-
   const [sortOrder, setSortOrder] = useState<"none" | "asc" | "desc">("none");
 
-  //  Lấy dữ liệu bài học + danh sách môn học
   useEffect(() => {
     fetchLessons();
     fetchSubjects();
@@ -81,7 +77,6 @@ export default function ManagerLesson() {
     }
   };
 
-  //  Thêm bài học mới
   const handleAddLesson = async () => {
     if (newLessonName.trim() === "") {
       setNameError("Vui lòng nhập Tên bài học!");
@@ -104,17 +99,16 @@ export default function ManagerLesson() {
       const newLesson = {
         name: newLessonName,
         subjectId: selectedSubjectId,
-        status: newStatus,
+        status: "inactive", 
         time: newTime,
       };
       await axios.post("http://localhost:8080/lessons", newLesson);
       await fetchLessons();
       setNewLessonName("");
       setSelectedSubjectId("");
-      setNewStatus("active");
       setNewTime(45);
       setShowAddModal(false);
-      showToast(" Đã thêm bài học thành công!");
+      showToast("Đã thêm bài học thành công!");
     } catch (err) {
       console.error("Lỗi khi thêm bài học:", err);
     }
@@ -123,7 +117,6 @@ export default function ManagerLesson() {
   const handleEditClick = (lesson: any) => {
     setEditId(lesson.id);
     setEditName(lesson.name);
-    setEditStatus(lesson.status);
     setEditTime(lesson.time || 45);
     setEditSubjectId(lesson.subjectId || "");
     setShowEditModal(true);
@@ -137,16 +130,28 @@ export default function ManagerLesson() {
     try {
       await axios.put(`http://localhost:8080/lessons/${editId}`, {
         name: editName,
-        status: editStatus,
         time: editTime,
         subjectId: editSubjectId,
       });
       await fetchLessons();
       setShowEditModal(false);
       setEditError("");
-      showToast(" Cập nhật bài học thành công!");
+      showToast("Cập nhật bài học thành công!");
     } catch (err) {
       console.error("Lỗi khi cập nhật bài học:", err);
+    }
+  };
+
+  const toggleLessonStatus = async (lesson: any) => {
+    const updatedStatus = lesson.status === "active" ? "inactive" : "active";
+    try {
+      await axios.put(`http://localhost:8080/lessons/${lesson.id}`, {
+        ...lesson,
+        status: updatedStatus,
+      });
+      await fetchLessons();
+    } catch (err) {
+      console.error("Lỗi khi thay đổi trạng thái:", err);
     }
   };
 
@@ -172,7 +177,6 @@ export default function ManagerLesson() {
     setTimeout(() => setToastMessage(""), 3000);
   };
 
-  //  Lọc & sắp xếp
   const filteredLessons = lessons.filter((lesson) => {
     const matchName = (lesson.name || "")
       .toLowerCase()
@@ -183,15 +187,14 @@ export default function ManagerLesson() {
   });
 
   let sortedLessons = [...filteredLessons];
-  if (sortOrder === "asc") {
+  if (sortOrder === "asc")
     sortedLessons.sort((a, b) => a.name.localeCompare(b.name));
-  } else if (sortOrder === "desc") {
+  else if (sortOrder === "desc")
     sortedLessons.sort((a, b) => b.name.localeCompare(a.name));
-  } else {
+  else
     sortedLessons = [...originalLessons].filter((l) =>
       filteredLessons.some((f) => f.id === l.id)
     );
-  }
 
   const handleSortToggle = () => {
     if (sortOrder === "none") setSortOrder("asc");
@@ -201,11 +204,10 @@ export default function ManagerLesson() {
 
   const totalPages = Math.ceil(sortedLessons.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentLessons = sortedLessons.slice(startIndex, startIndex + itemsPerPage);
-
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) setCurrentPage(page);
-  };
+  const currentLessons = sortedLessons.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   return (
     <div className="manager">
@@ -280,12 +282,12 @@ export default function ManagerLesson() {
             />
           </div>
 
-          {/* Table */}
+          {/*  Table */}
           <div className="table-container">
             <table>
               <thead>
                 <tr>
-                  <th className="text-center"><input type="checkbox" /></th>
+                  <th className="text-center">Hoàn thành</th>
                   <th onClick={handleSortToggle} style={{ cursor: "pointer" }}>
                     <div className="table-header-title">
                       Tên bài học{" "}
@@ -310,14 +312,20 @@ export default function ManagerLesson() {
 
               <tbody>
                 {currentLessons.length > 0 ? (
-                  currentLessons.map((lesson, index) => (
-                    <tr key={index}>
-                      <td className="text-center"><input type="checkbox" /></td>
+                  currentLessons.map((lesson) => (
+                    <tr key={lesson.id}>
+                      <td className="text-center">
+                        <input
+                          type="checkbox"
+                          checked={lesson.status === "active"}
+                          onChange={() => toggleLessonStatus(lesson)}
+                        />
+                      </td>
                       <td>{lesson.name}</td>
                       <td>
                         {
-                          subjectList.find((s) => s.id === lesson.subjectId)?.name ||
-                          "Không rõ"
+                          subjectList.find((s) => s.id === lesson.subjectId)
+                            ?.name || "Không rõ"
                         }
                       </td>
                       <td className="text-center">{lesson.time || 0}</td>
@@ -329,14 +337,17 @@ export default function ManagerLesson() {
                               : "status-inactive"
                           }
                         >
-                          <span className="status-dot" />
                           {statusLabel[lesson.status] || "Không rõ"}
                         </span>
                       </td>
                       <td className="text-center">
                         <div className="table-actions">
                           <button onClick={() => handleDeleteClick(lesson)}>
-                            <img src={deletee} alt="Xoá" className="action-icon" />
+                            <img
+                              src={deletee}
+                              alt="Xoá"
+                              className="action-icon"
+                            />
                           </button>
                           <button onClick={() => handleEditClick(lesson)}>
                             <img src={pen} alt="Sửa" className="action-icon" />
@@ -358,37 +369,30 @@ export default function ManagerLesson() {
 
           {/* Pagination */}
           <div className="pagination">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              «
-            </button>
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i}
                 className={currentPage === i + 1 ? "active" : ""}
-                onClick={() => handlePageChange(i + 1)}
+                onClick={() => setCurrentPage(i + 1)}
               >
                 {i + 1}
               </button>
             ))}
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              »
-            </button>
           </div>
         </div>
 
-        {/* Modal thêm mới bài học */}
+        {/* Modal thêm mới */}
         {showAddModal && (
           <div className="modal-overlay">
             <div className="modal">
               <div className="modal-header">
                 <h2>Thêm mới bài học</h2>
-                <button className="close-btn" onClick={() => setShowAddModal(false)}>x</button>
+                <button
+                  className="close-btn"
+                  onClick={() => setShowAddModal(false)}
+                >
+                  x
+                </button>
               </div>
               <div className="modal-body">
                 <label>Tên bài học</label>
@@ -425,46 +429,34 @@ export default function ManagerLesson() {
                   value={newTime}
                   onChange={(e) => setNewTime(Number(e.target.value))}
                 />
-
-                <label>Trạng thái</label>
-                <div className="modal-status">
-                  <label>
-                    <input
-                      type="radio"
-                      name="status"
-                      value="active"
-                      checked={newStatus === "active"}
-                      onChange={(e) => setNewStatus(e.target.value)}
-                    />
-                    Đã hoàn thành
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="status"
-                      value="inactive"
-                      checked={newStatus === "inactive"}
-                      onChange={(e) => setNewStatus(e.target.value)}
-                    />
-                    Chưa hoàn thành
-                  </label>
-                </div>
               </div>
               <div className="modal-footer">
-                <button className="btn-cancel" onClick={() => setShowAddModal(false)}>Hủy</button>
-                <button className="btn-submit" onClick={handleAddLesson}>Thêm</button>
+                <button
+                  className="btn-cancel"
+                  onClick={() => setShowAddModal(false)}
+                >
+                  Hủy
+                </button>
+                <button className="btn-submit" onClick={handleAddLesson}>
+                  Thêm
+                </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Modal chỉnh sửa bài học */}
+        {/*  Modal chỉnh sửa */}
         {showEditModal && (
           <div className="modal-overlay">
             <div className="modal">
               <div className="modal-header">
                 <h2>Cập nhật bài học</h2>
-                <button className="close-btn" onClick={() => setShowEditModal(false)}>x</button>
+                <button
+                  className="close-btn"
+                  onClick={() => setShowEditModal(false)}
+                >
+                  x
+                </button>
               </div>
               <div className="modal-body">
                 <label>Tên bài học</label>
@@ -497,40 +489,23 @@ export default function ManagerLesson() {
                   value={editTime}
                   onChange={(e) => setEditTime(Number(e.target.value))}
                 />
-
-                <label>Trạng thái</label>
-                <div className="modal-status">
-                  <label>
-                    <input
-                      type="radio"
-                      name="edit-status"
-                      value="active"
-                      checked={editStatus === "active"}
-                      onChange={(e) => setEditStatus(e.target.value)}
-                    />
-                    Đã hoàn thành
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="edit-status"
-                      value="inactive"
-                      checked={editStatus === "inactive"}
-                      onChange={(e) => setEditStatus(e.target.value)}
-                    />
-                    Chưa hoàn thành
-                  </label>
-                </div>
               </div>
               <div className="modal-footer">
-                <button className="btn-cancel" onClick={() => setShowEditModal(false)}>Hủy</button>
-                <button className="btn-submit" onClick={handleUpdateLesson}>Lưu thay đổi</button>
+                <button
+                  className="btn-cancel"
+                  onClick={() => setShowEditModal(false)}
+                >
+                  Hủy
+                </button>
+                <button className="btn-submit" onClick={handleUpdateLesson}>
+                  Lưu thay đổi
+                </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Xác nhận xoá */}
+        {/* Xác nhận xóa */}
         {showDeleteConfirm && (
           <div className="modal-overlay">
             <div className="modal small">
@@ -538,11 +513,23 @@ export default function ManagerLesson() {
                 <h2>Xác nhận xóa</h2>
               </div>
               <div className="modal-body">
-                <p>Bạn có chắc muốn xóa bài học <b>"{deleteName}"</b> không?</p>
+                <p>
+                  Bạn có chắc muốn xóa bài học <b>"{deleteName}"</b> không?
+                </p>
               </div>
               <div className="modal-footer">
-                <button className="btn-cancel" onClick={() => setShowDeleteConfirm(false)}>Hủy</button>
-                <button className="btn-submit delete" onClick={confirmDelete}>Xóa</button>
+                <button
+                  className="btn-cancel"
+                  onClick={() => setShowDeleteConfirm(false)}
+                >
+                  Hủy
+                </button>
+                <button
+                  className="btn-submit delete"
+                  onClick={confirmDelete}
+                >
+                  Xóa
+                </button>
               </div>
             </div>
           </div>

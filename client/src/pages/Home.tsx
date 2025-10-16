@@ -22,14 +22,16 @@ function Home() {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [user, setUser] = useState<{ name?: string; email?: string } | null>(null);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
+
     const menuRef = useRef<HTMLDivElement>(null);
 
-    //  Kiểm tra đăng nhập và load user
+    // Kiểm tra đăng nhập và load user
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
 
         if (!storedUser) {
-            // Nếu chưa đăng nhập → quay lại trang login
             alert("Vui lòng đăng nhập để truy cập trang này!");
             navigate("/login");
             return;
@@ -41,7 +43,6 @@ function Home() {
             setUser(null);
         }
 
-        // Đóng menu khi click ra ngoài
         const handleClickOutside = (e: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
                 setShowProfileMenu(false);
@@ -51,7 +52,7 @@ function Home() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [navigate]);
 
-    //  Lấy dữ liệu môn học và bài học
+    // Lấy dữ liệu môn học và bài học
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -70,7 +71,6 @@ function Home() {
         fetchData();
     }, []);
 
-    //  Đăng xuất
     const handleLogout = () => {
         const confirmLogout = window.confirm("Bạn có chắc chắn muốn đăng xuất không?");
         if (confirmLogout) {
@@ -81,17 +81,17 @@ function Home() {
         }
     };
 
-    //  Gộp dữ liệu
     const courses = subjects.map((subject) => ({
         ...subject,
         lessons: lessons.filter((lesson) => lesson.subjectId === subject.id),
     }));
 
-    //  Lọc dữ liệu
     const filteredCourses = courses
         .filter((course) => {
-            if (filterTab === "active") return course.status === "active";
-            if (filterTab === "inactive") return course.status === "inactive";
+            if (filterTab === "active")
+                return course.lessons.some((l: any) => l.status === "active");
+            if (filterTab === "inactive")
+                return course.lessons.some((l: any) => l.status === "inactive");
             return true;
         })
         .filter((course) => {
@@ -103,6 +103,21 @@ function Home() {
             );
             return matchSubject || matchLesson;
         });
+
+    const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedCourses = filteredCourses.slice(startIndex, startIndex + itemsPerPage);
+
+    const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    };
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filterTab, searchTerm]);
 
     return (
         <div className="home">
@@ -185,39 +200,68 @@ function Home() {
             {loading ? (
                 <p className="loading-text">Đang tải dữ liệu...</p>
             ) : (
-                <div className="course-grid">
-                    {filteredCourses.length > 0 ? (
-                        filteredCourses.map((course) => (
-                            <div key={course.id} className="course-card">
-                                <h3>{course.name}</h3>
-                                {course.lessons.length > 0 ? (
-                                    <>
-                                        <ul>
-                                            {course.lessons.slice(0, 5).map((lesson: any) => (
-                                                <li
-                                                    key={lesson.id}
-                                                    className={
-                                                        lesson.status === "active"
-                                                            ? "completed"
-                                                            : "incomplete"
-                                                    }
-                                                >
-                                                    {lesson.status === "active" ? "✔ " : "• "}
-                                                    {lesson.name}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        <Link to={`/course/${course.id}`} className="more">
-                                            Xem thêm
-                                        </Link>
-                                    </>
-                                ) : (
-                                    <p className="empty">Không có bài học nào</p>
-                                )}
-                            </div>
-                        ))
-                    ) : (
-                        <p className="empty">Không có môn học nào phù hợp.</p>
+                <div className="course-section">
+                    <div className="course-grid">
+                        {paginatedCourses.length > 0 ? (
+                            paginatedCourses.map((course) => (
+                                <div key={course.id} className="course-card">
+                                    <h3>{course.name}</h3>
+                                    {course.lessons.length > 0 ? (
+                                        <>
+                                            <ul>
+                                                {course.lessons.slice(0, 5).map((lesson: any) => (
+                                                    <li
+                                                        key={lesson.id}
+                                                        className={
+                                                            lesson.status === "active"
+                                                                ? "completed"
+                                                                : "incomplete"
+                                                        }
+                                                    >
+                                                        {lesson.status === "active" ? "✔ " : "• "}
+                                                        {lesson.name}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            <Link to={`/course/${course.id}`} className="more">
+                                                Xem thêm
+                                            </Link>
+                                        </>
+                                    ) : (
+                                        <p className="empty">Không có bài học nào</p>
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                            <p className="empty">Không có môn học nào phù hợp.</p>
+                        )}
+                    </div>
+
+                    {/*  Thanh phân trang */}
+                    {totalPages > 1 && (
+                        <div className="pagination">
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                            >
+                                Trước
+                            </button>
+                            {Array.from({ length: totalPages }, (_, i) => (
+                                <button
+                                    key={i + 1}
+                                    className={currentPage === i + 1 ? "active-page" : ""}
+                                    onClick={() => handlePageChange(i + 1)}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                            >
+                                Sau
+                            </button>
+                        </div>
                     )}
                 </div>
             )}
@@ -226,7 +270,7 @@ function Home() {
             <footer className="footer">
                 <div className="about">
                     <p>
-                        Chúng tôi cung cấp giải pháp học tập, giúp học sinh và sinh viên học tập dễ
+                        Chúng tôi cung cấp giải pháp học tập giúp học sinh và sinh viên học tập dễ
                         dàng và hiệu quả hơn.
                     </p>
                 </div>

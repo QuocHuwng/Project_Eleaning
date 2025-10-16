@@ -81,56 +81,57 @@
   ],
   "subjects": [
     {
-      "name": "Học Văn1",
-      "status": "active",
-      "id": 4
-    },
-    {
-      "name": "Học Chơi",
-      "status": "inactive",
-      "id": 5
-    },
-    {
       "name": "Học Tập",
       "status": "active",
       "id": 6
     },
     {
-      "name": "hi",
-      "status": "inactive",
-      "id": 7
-    },
-    {
-      "name": "học toánd",
+      "name": "Học Toán",
       "status": "active",
       "id": 8
-    },
-    {
-      "name": "m",
-      "status": "active",
-      "id": 9
     },
     {
       "name": "học văn",
       "status": "active",
       "id": 10
+    },
+    {
+      "name": "Học React",
+      "status": "inactive",
+      "id": 13
+    },
+    {
+      "name": "Học Viết",
+      "status": "inactive",
+      "id": 14
+    },
+    {
+      "name": "Học Bơi",
+      "status": "active",
+      "id": 16
+    },
+    {
+      "name": "Học Ngủ",
+      "status": "active",
+      "id": 17
+    },
+    {
+      "name": "Học Đá Bóng",
+      "status": "active",
+      "id": 18
+    },
+    {
+      "name": "Học Anh",
+      "status": "active",
+      "id": 19
+    },
+    {
+      "name": "Học Sử",
+      "status": "active",
+      "id": 20
     }
   ],
   "lessons": [
-    {
-      "name": "Bài 4",
-      "subjectId": 4,
-      "status": "active",
-      "time": 45,
-      "id": 4
-    },
-    {
-      "name": "Bài 5",
-      "subjectId": 5,
-      "status": "active",
-      "time": 45,
-      "id": 5
-    },
     {
       "name": "bài 6",
       "subjectId": 6,
@@ -139,11 +140,53 @@
       "id": 6
     },
     {
-      "name": "hi",
-      "subjectId": 7,
+      "name": "Bài 10",
+      "time": 45,
+      "subjectId": 10,
+      "id": 10,
+      "status": "active"
+    },
+    {
+      "name": "Học bơi buổi 2",
+      "subjectId": 16,
       "status": "inactive",
       "time": 45,
-      "id": 7
+      "id": 11
+    },
+    {
+      "name": "Học tập buổi 1",
+      "time": 45,
+      "subjectId": 14,
+      "id": 12,
+      "status": "active"
+    },
+    {
+      "name": "Học Ngủ buổi 1",
+      "subjectId": 17,
+      "status": "inactive",
+      "time": 24,
+      "id": 13
+    },
+    {
+      "name": "Học toán buổi 2",
+      "subjectId": 8,
+      "status": "inactive",
+      "time": 45,
+      "id": 14
+    },
+    {
+      "name": "Bài 9",
+      "subjectId": 10,
+      "status": "inactive",
+      "time": 45,
+      "id": 15
+    },
+    {
+      "name": "Buổi 9",
+      "subjectId": 6,
+      "status": "inactive",
+      "time": 45,
+      "id": 16
     }
   ]
 }

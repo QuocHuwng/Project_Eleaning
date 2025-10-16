@@ -125,10 +125,6 @@ function Login() {
             <p className="login-link">
                 Bạn chưa có tài khoản? <Link to="/register">Đăng ký</Link>
             </p>
-            <div className="demo-info">
-                Email: admin@gmail.com <br />
-                Mật khẩu: admin123
-            </div>
         </div>
     );
 }
